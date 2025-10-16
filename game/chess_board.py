@@ -1,0 +1,140 @@
+from game.chess_pieces import Piece, Pawn, Knight, Bishop, Rook, Queen, King
+from pprint import pprint
+
+
+class Game:  # или игра?
+    def __init__(self):
+        self.board = [[None for i in range(8)] for i in range(8)]
+        self.white_attack_map = [[0 for i in range(8)] for i in range(8)]
+        self.black_attack_map = [[0 for i in range(8)] for i in range(8)]
+
+        # self.board[1][0] = Pawn("black", 1, 0)
+        # self.board[5][5] = Rook('white', 5, 5)
+
+        
+        for col in range(8):
+            self.board[6][col] = Pawn('white', 6, col)
+            self.board[1][col] = Pawn('black', 1, col)
+        self.board[7][4] = King("white", 7, 4)
+        # self.board[0][4] = King("black", 0, 4)
+
+        self.board[7][3] = Queen('white', 7, 3)
+        # self.board[0][3] = Queen('black', 0, 3)
+
+        self.board[7][2] = Bishop("white", 7, 2)
+        # self.board[0][2] = Bishop("black", 0, 2)
+        self.board[7][5] = Bishop("white", 7, 5)
+        # self.board[0][5] = Bishop("black", 0, 5)
+
+        self.board[7][1] = Knight("white", 7, 1)
+        # self.board[0][1] = Knight("black", 0, 1)
+        self.board[7][6] = Knight("white", 7, 6)
+        # self.board[0][6] = Knight("black", 0, 6)
+
+        self.board[7][0] = Rook("white", 7, 0)
+        # self.board[0][0] = Rook("black", 7, 2)
+        self.board[7][7] = Rook("white", 7, 7)
+        # self.board[0][7] = Rook("black", 7, 2)
+
+
+    def board_str(self):
+        board = []
+        for row in range(8):
+            row_data = []
+            for col in range(8):
+                square = self.board[row][col]
+                if square:
+                    # гарантируем строку
+                    row_data.append(str(square.appearence))
+                else:
+                    row_data.append("")
+            board.append(row_data)
+        return board
+
+
+        
+    def move_figure(self, row, col, row2, col2):
+        figure: Piece = self.board[row][col]
+        if not figure:
+            return False
+                
+        move = [row2, col2]
+        if move in figure.moves:
+            figure.row = row2
+            figure.col = col2
+            self.board[row][col], self.board[row2][col2] = (
+                self.board[row2][col2],
+                self.board[row][col],
+            )
+            figure.is_first_move = False 
+            return True
+
+        return False
+    
+    def is_free_move(self, move, figure: Piece): 
+        if self.board[move[0]][move[1]]:
+            if self.board[move[0]][move[1]].side == figure.side:
+                return False
+        if figure.row == move[0] and figure.col != move[1]:
+            min_col = min(figure.col, move[1])
+            max_col = max(figure.col, move[1])
+            for col in range(min_col + 1, max_col):
+                if self.board[move[0]][col]:
+                    return False
+        if abs(figure.row - move[0]) == abs(figure.col - move[1]):
+            min_col = min(figure.col, move[1])
+            max_col = max(figure.col, move[1])
+            min_row = min(figure.row, move[0])
+            max_row = max(figure.row, move[0])
+            lst_squares = zip(range(min_row+1, max_row), range(min_col+1, max_col))
+            for row, col in lst_squares:
+                if self.board[row][col]:
+                    return False
+        if figure.row != move[0] and figure.col == move[1]: 
+            '''Фигура делает ход в столбик (только row меняется)'''
+            min_row = min(figure.row, move[0])
+            max_row = max(figure.row, move[0])
+            for row in range(min_row + 1, max_row):
+                if self.board[row][move[1]]:
+                    return False
+        return True
+        
+
+
+    def clean_attack_moves(self, figure: Piece):
+        for move in figure.moves.copy():
+            if not self.is_free_move(move, figure):
+                figure.moves.remove(move)
+        
+
+    def calc_attack_map(self, side):  # для каждой фигуры считает calc_attach_moves + clean_attack_moves
+        for row in range(8):
+            for col in range(8):
+                figure: Piece = self.board[row][col]
+                if figure and figure.side == side:
+                    figure.calc_attack_moves()
+                    print(figure.appearence, figure.moves)
+                    self.clean_attack_moves(figure)
+                    print('Х', figure.appearence, figure.moves)
+                    for move in figure.moves: 
+                        r, c = move  # переименовали переменные
+                        if side == 'black':
+                            self.black_attack_map[r][c] += 1
+                        elif side == 'white':
+                            self.black_attack_map[r][c] += 1
+
+    
+            
+
+
+
+if __name__ == "__main__":
+    game = Game()
+    # game.calc_attack_map('white')
+    # pprint(game.board)
+    # game.calc_attack_map('black')
+    # pprint(game.white_attack_map)
+    # print(game.move_figure(6,0,4,0))
+    # pprint(game.board)
+    pprint(game.board_str())
+

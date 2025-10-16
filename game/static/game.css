@@ -1,0 +1,27 @@
+#board {
+  display: grid;
+  grid-template-columns: repeat(8, 60px);
+  grid-auto-rows: 60px; /* высота строк */
+  border: 2px solid #000;
+}
+
+.cell {
+  border: 1px solid gray;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+
+
+/* Чётко укажем селекторы с большим приоритетом */
+#board .cell.light {
+  background: #26be3d;
+}
+#board .cell.dark {
+  background: #63b58b;
+  color: #fff;
+}
