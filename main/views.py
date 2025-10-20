@@ -6,7 +6,7 @@ from django.views.generic.base import TemplateView
 # load_dotenv()
 
 class IndexView(TemplateView):
-    template_name = "main/index.html"
+    template_name = "game/index.html"
 
     def get(self, request, *args, **kwargs):
         login_form = LoginForm()
