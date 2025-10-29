@@ -5,12 +5,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{% static 'css/game.css' %}">
+    <link rel="stylesheet" href="{% static 'css/game.css' %}" />
     <title>Chess Board</title>
   </head>
   <body>
     <div id="board"></div>
     supwrld
     <script src="{% static 'js/game.js' %}"></script>
+    <script>
+      localStorage.setItem("game_id", "{{game_id}}");
+    </script>
   </body>
 </html>

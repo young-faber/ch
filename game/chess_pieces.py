@@ -1,9 +1,9 @@
 class Piece():
-    def __init__(self, side: str, row: int, col: int):
+    def __init__(self, side: str, row: int, col: int, is_first_move = True):
         self.side = side
         self._row = row
         self._col = col
-        self.is_first_move = True
+        self.is_first_move = is_first_move
         self.appearence = ''
         self.moves = []
     
@@ -46,11 +46,12 @@ class Piece():
             for col in range(8):
                 if self.is_valid_move(row, col):
                     self.moves.append([row, col])
+
         
 
 class Pawn(Piece):
-    def __init__(self, side, row, col):
-        super().__init__(side, row, col)
+    def __init__(self, side, row, col, is_first_move = True):
+        super().__init__(side, row, col, is_first_move)
         self.appearence = 'Pb' if self.side == 'black' else 'Pw'
     
 
@@ -73,8 +74,8 @@ class Pawn(Piece):
         
     
 class Knight(Piece):
-    def __init__(self, side, row, col):
-        super().__init__(side, row, col)
+    def __init__(self, side, row, col, is_first_move = True):
+        super().__init__(side, row, col, is_first_move)
         self.appearence = 'Nb' if self.side == 'black' else 'Nw'
 
     def is_valid_move(self, new_row: int, new_col: int) -> bool:
@@ -86,8 +87,8 @@ class Knight(Piece):
             
 
 class Bishop(Piece):
-    def __init__(self, side, row, col):
-        super().__init__(side, row, col)
+    def __init__(self, side, row, col, is_first_move = True):
+        super().__init__(side, row, col, is_first_move)
         self.appearence = 'Bb' if self.side == 'black' else 'Bw'
 
     def is_valid_move(self, new_row: int, new_col: int) -> bool:
@@ -97,8 +98,8 @@ class Bishop(Piece):
          
 
 class Rook(Piece):
-    def __init__(self, side, row, col):
-        super().__init__(side, row, col)
+    def __init__(self, side, row, col, is_first_move = True):
+        super().__init__(side, row, col, is_first_move)
         self.appearence = 'Rb' if self.side == 'black' else 'Rw'
 
     def is_valid_move(self, new_row: int, new_col: int) -> bool:
@@ -110,8 +111,8 @@ class Rook(Piece):
     #     pass
 
 class Queen(Piece):
-    def __init__(self, side, row, col):
-        super().__init__(side, row, col)
+    def __init__(self, side, row, col, is_first_move = True):
+        super().__init__(side, row, col, is_first_move)
         self.appearence = 'Qb' if self.side == 'black' else 'Qw'
     
     def is_valid_move(self, new_row: int, new_col: int) -> bool:
@@ -120,8 +121,8 @@ class Queen(Piece):
         return False
 
 class King(Piece):
-    def __init__(self, side, row, col):
-        super().__init__(side, row, col)
+    def __init__(self, side, row, col, is_first_move = True):
+        super().__init__(side, row, col, is_first_move)
         self.appearence = 'Kb' if self.side == 'black' else 'Kw'
 
     def is_valid_move(self, new_row: int, new_col: int) -> bool:
@@ -138,3 +139,6 @@ if __name__ == '__main__':
     print(f.row)
     print(str(f))
     print('1')
+
+
+pieces_cls = {'Pawn': Pawn, 'Rook': Rook, 'Queen':Queen, 'King':King, 'Knight': Knight, 'Bishop': Bishop}#также с остальными 

@@ -11,6 +11,7 @@ class Game(models.Model):
             ("finished", "законченная"),
             ("waiting", "ожидается"),
         ],
+        default="waiting"
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -22,11 +23,28 @@ class Game(models.Model):
         on_delete=models.SET_NULL,
         related_name="won_games",
     )
-
-
-class Move(models.Model):
-    pass
+    white = models.ForeignKey(
+        MyUser,
+        on_delete=models.CASCADE,
+        default=None,
+        null=True,
+        blank=True,
+    )
+    black = (
+        models.ForeignKey(
+            MyUser, on_delete=models.CASCADE, default=None, null=True, blank=True
+        ),
+    )
+    current = models.CharField(
+        max_length=10, choices=[("white", "white"), ("black", "black")], default="white"
+    )
 
 
 class GameUser(models.Model):
+    """$"""
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+
+
+class Move(models.Model):
     pass
