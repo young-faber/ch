@@ -99,42 +99,50 @@ class GameBoard:  # или игра?
         figure: Piece = self.board[row][col]
         if not figure:
             return False
-
+            
         if self.current != figure.side:
-            raise KeyError('Ходит другая сторона')
-        
+            raise ValueError('Ходит другая сторона')
+
         # Вычисляем возможные ходы
         figure.calc_attack_moves()
         self.clean_attack_moves(figure)
-        
         move = [row2, col2]
-        
 
-        if self.current == figure.side and move in figure.moves:
+        if move in figure.moves:
+            # Временно делаем ход
+            temp_piece = self.board[row2][col2]
+            self.board[row2][col2] = figure
+            self.board[row][col] = None
             figure.row = row2
             figure.col = col2
 
+            # Пересчитываем карты атак
             if self.current == "white":
-                print('курент посчитался')
-                r, c = self.kw
-                if self.black_attack_map[r][c] > 0:
-                    print('Мапа просчиталась')
-                    raise ValueError("шах")
+                self.calc_attack_map("black")
+                king_row, king_col = self.kw
+                if self.black_attack_map[king_row][king_col] > 0:
+                    # Возвращаем ход назад
+                    self.board[row][col] = figure
+                    self.board[row2][col2] = temp_piece
+                    figure.row = row
+                    figure.col = col
+                    raise ValueError("Ход нельзя сделать: шах белому королю")
+            else:
+                self.calc_attack_map("white")
+                king_row, king_col = self.kb
+                if self.white_attack_map[king_row][king_col] > 0:
+                    # Возвращаем ход назад
+                    self.board[row][col] = figure
+                    self.board[row2][col2] = temp_piece
+                    figure.row = row
+                    figure.col = col
+                    raise ValueError("Ход нельзя сделать: шах черному королю")
 
-            if self.current == "black":
-                r, c = self.kb
-                if self.white_attack_map[r][c] > 0:
-                    raise ValueError("шах")
-
-            self.board[row][col], self.board[row2][col2] = (
-                self.board[row2][col2],
-                self.board[row][col],
-            )
             figure.is_first_move = False
-            # Меняем текущего игрока
             self.current = "black" if self.current == "white" else "white"
             return True
-        raise ValueError("Невозможный ход")  # Исправлено: правильный raise
+
+        raise ValueError("Невозможный ход")
 
     def is_free_move(self, move, figure: Piece):
         if self.board[move[0]][move[1]]:
