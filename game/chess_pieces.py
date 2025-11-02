@@ -141,4 +141,4 @@ if __name__ == '__main__':
     print('1')
 
 
-pieces_cls = {'Pawn': Pawn, 'Rook': Rook, 'Queen':Queen, 'King':King, 'Knight': Knight, 'Bishop': Bishop}#также с остальными 
+pieces_cls = {'Pawn': Pawn, 'Rook': Rook, 'Queen':Queen, 'King':King, 'Knight': Knight, 'Bishop': Bishop}

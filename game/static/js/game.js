@@ -60,12 +60,15 @@ board.addEventListener('click', (e) => {
         const fromRow = Math.floor(selectedCell / 8);
         const fromCol = selectedCell % 8;
         
+
         // Шлём ход на сервер. Сервер отвечает JSON: { success: true/false, ... }
-        fetch(`/game/move_figure?from_row=${fromRow}&from_col=${fromCol}&to_row=${row}&to_col=${col}`)
+        let gameId = localStorage.getItem('game_id');
+        fetch(`/game/move_figure/${gameId}/?from_row=${fromRow}&from_col=${fromCol}&to_row=${row}&to_col=${col}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     // Если ход принят, перетягиваем актуальную позицию и перерисовываем
+                    console.log("Move successful");
                     let gameId = localStorage.getItem('game_id');
                     fetch('/game/get_board/' + gameId)
                         .then(response => response.json())
@@ -93,7 +96,9 @@ board.addEventListener('click', (e) => {
 
         // Просим сервер вернуть список ходов из клетки (row, col).
         // Ожидаемый ответ: { moves: [[r1,c1], [r2,c2], ...] }
-        fetch(`/game/get_moves?row=${row}&col=${col}`)
+        let game_id = localStorage.getItem('game_id');
+        fetch(`/game/get_moves/` + gameId + `/?row=${row}&col=${col}`) //как-то так я попытался сделать
+        // fetch(`/game/get_moves?row=${row}&col=${col}`)
             .then(response => response.json())
             .then(data => {
                 data.moves.forEach(move => {
