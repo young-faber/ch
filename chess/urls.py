@@ -21,7 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls), 
     path('', include('main.urls')),
     path('user/', include('user.urls')),
-    path('game/', include('game.urls'))
+    path('game/', include('game.urls', 'game'), name='game')
 ]
 
 # if settings.DEBUG: 

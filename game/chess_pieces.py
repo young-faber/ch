@@ -126,6 +126,7 @@ class King(Piece):
         self.appearence = 'Kb' if self.side == 'black' else 'Kw'
 
     def is_valid_move(self, new_row: int, new_col: int) -> bool:
+
         if (abs(self.row - new_row) == 1 and abs(self.col - new_col) == 0) or abs(self.row - new_row) == 1 and abs(self.col - new_col) == 1 or abs(self.row - new_row) == 0 and abs(self.col - new_col) == 1:
             return True
         return False

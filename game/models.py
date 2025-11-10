@@ -29,12 +29,17 @@ class Game(models.Model):
         default=None,
         null=True,
         blank=True,
+        related_name='game_as_white'
     )
-    black = (
-        models.ForeignKey(
-            MyUser, on_delete=models.CASCADE, default=None, null=True, blank=True
-        ),
-    )
+    black = models.ForeignKey(
+            MyUser, 
+            on_delete=models.CASCADE,
+            default=None,
+            null=True,
+            blank=True,
+            related_name='game_as_black'
+        )
+    
     current = models.CharField(
         max_length=10, choices=[("white", "white"), ("black", "black")], default="white"
     )

@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
 from django.http.response import JsonResponse
 from game.chess_board import GameBoard
 from game.models import Game
@@ -11,8 +12,17 @@ import json
 def create_game(request):
     game_obj = GameBoard()
     game=Game(board=json.dumps(game_obj.searialize_board()))
+    game.white = request.user
     game.save()
-    return render(request, "game/index.html", context={'game_id':game.id})
+    return redirect('game:render_game', pk=game.id)
+    
+def render_game(request, pk):
+    game = Game.objects.get(id=pk)
+    if game.white != request.user:
+        game.black = request.user
+        game.save()
+    
+    return render(request, "game/index.html", context={'game_id':pk})
 
 
 def get_board(request,pk):
@@ -30,9 +40,6 @@ def get_moves(request,pk):
 
     square: Piece = game_obj.board[row][col]
     if square:
-        square.calc_attack_moves() 
-        game_obj.clean_attack_moves(square)  
-  
         return JsonResponse({"moves": square.moves})
     return JsonResponse({"moves": [], "error": "No piece at this position"})
 
@@ -45,6 +52,8 @@ def move_figure(request,pk):
 
     
     game = Game.objects.get(id=pk)
+    if game.current == 'white' and game.white != request.user:
+        return JsonResponse({"success": False})
     game_obj = GameBoard(new_game=False, board_str=game.board, current=game.current)   
 
     # Get the piece and try to move it
@@ -53,7 +62,9 @@ def move_figure(request,pk):
     )  # кладем результат в суцес и если ок, возвращаем
     
     game_obj.calc_attack_map("white")
+    print("calc map succes w")
     game_obj.calc_attack_map("black")
+    print("calc map succes b")
     current = 'white' if game.current == 'black' else 'black'
     a = game_obj.searialize_board()
     print(a)
@@ -64,4 +75,5 @@ def move_figure(request,pk):
     # except Exception as e:
     #     return JsonResponse({"success": False, "error": str(e)})
     
-
+def pawn_prime(request, pk):
+    pass
