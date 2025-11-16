@@ -17,6 +17,25 @@ function renderBoard(boardData) {
     }
 }
 
+function sendPromotionRequest(piece) { //get piece from button data-piece
+    const gameId = localStorage.getItem('game_id');
+
+    fetch(`/game/pawn_promotion/${gameId}/?piece=${piece}&from_row=${window.promofromRow}&from_col=${window.promofromCol}&to_row=${window.promotoRow}&to_col=${window.promotoCol}`)
+        .then(r => r.json())
+        .then(data => {
+            if (!data.success) {
+                alert(data.error);
+                return;
+            }
+
+            // обновляем доску
+            renderBoard(data.board);
+
+            // закрываем окно
+            document.getElementById('promotion-dialog').style.display = 'none';
+        });
+}
+
 board.addEventListener('click', (e) => {
     const clickedCell = e.target.closest('.cell');
     if (!clickedCell || !board.contains(clickedCell)) return;
@@ -36,6 +55,28 @@ board.addEventListener('click', (e) => {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    if (data.success == 'pawn_promotion') {
+                        window.promofromRow = data.from_row;
+                        window.promofromCol = data.from_col;
+                        window.promotoRow = data.to_row;
+                        window.promotoCol = data.to_col;
+
+                        //это не важно (все что закомент)
+                        // Handle pawn promotion (e.g., show a modal to choose a piece)
+                        // const modal = document.createElement('div'); 
+                        // modal.id = 'promotion-dialog';
+                        // modal.innerHTML = `
+                        //     <div class="promo-window">
+                        //         <button data-piece="q">Ферзь</button>
+                        //         <button data-piece="r">Ладья</button>
+                        //         <button data-piece="b">Слон</button>
+                        //         <button data-piece="n">Конь</button>
+                        //     </div>
+                        // `;
+                        // document.body.appendChild(modal);
+                        document.getElementById('promotion-dialog').style.display = 'block';
+                        console.log("Pawn promotion triggered");
+                    }
                     return fetch('/game/get_board/' + gameId);
                 } else {
                     alert(data.error);

@@ -3,6 +3,7 @@ from .chess_pieces import Piece, Pawn, Rook, Knight, Bishop, Queen, King, pieces
 # from game.chess_pieces import Piece, Pawn, Knight, Bishop, Rook, Queen, King
 from pprint import pprint
 from typing import List, Dict
+from copy import deepcopy
 import json
 
 
@@ -17,11 +18,12 @@ class GameBoard:  # или игра?
             self.kb = [0, 0]
             # check = None
 
-            self.board[1][0] = Pawn("black", 1, 0)
+            self.board[1][0] = Pawn("black", 1, 7)
+            self.board[2][4] = Pawn('white', 2, 4, False)
             # self.board[5][5] = Rook('white', 5, 5)
 
-            # for col in range(8):
-                # self.board[6][col] = Pawn("white", 6, col)
+            for col in range(2):
+                self.board[6][col] = Pawn("white", 6, col)
                 # self.board[1][col] = Pawn("black", 1, col)
             self.board[7][4] = King("white", 7, 4)
             self.board[0][4] = King("black", 0, 4)
@@ -39,10 +41,10 @@ class GameBoard:  # или игра?
             # self.board[7][6] = Knight("white", 7, 6)
             # self.board[0][6] = Knight("black", 0, 6)
 
-            self.board[7][0] = Rook("white", 7, 0)
-            self.board[0][0] = Rook("black", 0, 7)
-            self.board[7][7] = Rook("white", 7, 7)
-            self.board[0][7] = Rook("black", 0, 0)
+            # self.board[7][0] = Rook("white", 7, 0)
+            # self.board[0][0] = Rook("black", 0, 7)
+            # self.board[7][7] = Rook("white", 7, 7)
+            # self.board[0][7] = Rook("black", 0, 0)
         else:
             if not board_str:
                 raise TypeError("ты не передал доску")
@@ -109,6 +111,8 @@ class GameBoard:  # или игра?
                 # self.board[][]
                 pass
 
+        
+        
 
         # Вычисляем возможные ходы
         figure.calc_attack_moves()
@@ -116,6 +120,7 @@ class GameBoard:  # или игра?
         move = [row2, col2]
 
         if move in figure.moves:
+            #на самом деле не временно, если перенести то что касается мата 
             # Временно делаем ход
             temp_piece = self.board[row2][col2]
             self.board[row2][col2] = figure
@@ -123,6 +128,21 @@ class GameBoard:  # или игра?
             old_row, old_col = figure.row, figure.col
             figure.row = row2
             figure.col = col2
+
+            
+
+
+
+            if isinstance(figure, Pawn): #Pawn
+                pawn: Pawn = figure
+                if pawn.side == 'white':
+                    if row2 == 0:
+                        print('p_pw')
+                        return('pawn_promotion')
+                if pawn.side == 'black':
+                    if row2 == 7:
+                        print('p_pb')
+                        return('pawn_promotion')
 
             # Пересчитываем карту атак противника после хода
             enemy_side = "black" if self.current == "white" else "white"
@@ -181,8 +201,10 @@ class GameBoard:  # или игра?
                 figure.moves.remove(move)
 
     def calc_attack_map(
+
         self, side
-    ):  # для каждой фигуры считает calc_attack_moves + clean_attack_moves
+    ):#тут для тех кому поставили шах, if check true, calc_defence_map, для каждой фигуры как калк атак мэп, спасает 
+        # для каждой фигуры считает calc_attack_moves + clean_attack_moves
         for row in range(8):
             for col in range(8):
                 figure: Piece = self.board[row][col]
@@ -199,6 +221,7 @@ class GameBoard:  # или игра?
                         self.is_castling_possible(side)
                         print("castling check happend")
                         
+
                     for move in figure.moves:
                         r, c = move  # переименовали переменные
                         if side == "black":
@@ -239,7 +262,8 @@ class GameBoard:  # или игра?
                 #                 king.moves.append([7,6])
                 #                 self.white_attack_map[7][6] += 1
 
-        
+    def pawn_promotion(piece, from_row, from_col, to_row, to_col):
+        pass
         
 if __name__ == "__main__":
     game = GameBoard()

@@ -2,32 +2,17 @@ from django.shortcuts import redirect
 from user.forms import LoginForm
 from django.contrib import auth
 from django.views.generic.base import TemplateView
+from django.contrib.auth.views import LoginView
 
 # load_dotenv()
 
-class IndexView(TemplateView):
-    template_name = "game/index.html"
+class IndexView(LoginView):
+    form_class = LoginForm
+    authentication_form = LoginForm
+    template_name = "main/index.html"
+    redirect_authenticated_user = True
 
-    def get(self, request, *args, **kwargs):
-        login_form = LoginForm()
-        context = {"login_form": login_form}
-        return self.render_to_response(context)
+    
 
-    def post(self, request, *args, **kwargs):
-        login_form = LoginForm(data=request.POST)
-
-        if login_form.is_valid():
-            username = request.POST.get("username")
-
-            password = request.POST.get("password")
-
-            user = auth.authenticate(username=username, password=password)
-            if user:
-                auth.login(request, user)
-                return redirect("/")
-
-        context = {"login_form": login_form}
-        return self.render_to_response(context)
-
-def lobby(): 
-    pass
+def lobby(request): 
+    return redirect('/')

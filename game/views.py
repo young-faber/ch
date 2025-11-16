@@ -52,14 +52,22 @@ def move_figure(request,pk):
 
     
     game = Game.objects.get(id=pk)
-    if game.current == 'white' and game.white != request.user:
+    if game.current == 'white' and game.white != request.user: #почему проверка только у белого?
+        return JsonResponse({"success": False})
+    elif game.current == 'black' and game.black != request.user: 
         return JsonResponse({"success": False})
     game_obj = GameBoard(new_game=False, board_str=game.board, current=game.current)   
+
 
     # Get the piece and try to move it
     success = game_obj.move_figure(
         from_row, from_col, to_row, to_col
     )  # кладем результат в суцес и если ок, возвращаем
+
+    # if success == 'pawn_promotion':
+    #     row = to_row
+    #     col = to_col
+        # return JsonResponse({"succes": })
     
     game_obj.calc_attack_map("white")
     print("calc map succes w")
@@ -71,9 +79,28 @@ def move_figure(request,pk):
     game.board = json.dumps(a)
     game.current = current
     game.save()
-    return JsonResponse({"success": success})
+    return JsonResponse({"success": success, 'from_row': from_row, 'from_col':from_col, 'to_row': to_row, 'to_col': to_col})
     # except Exception as e:
     #     return JsonResponse({"success": False, "error": str(e)})
     
-def pawn_prime(request, pk):
-    pass
+def pawn_promotion(request, pk):
+    # from_row = int(request.GET.get("from_row"))
+    # from_col = int(request.GET.get("from_col"))
+    piece = request.GET.get("piece")
+    to_row = int(request.GET.get("row"))
+    to_col = int(request.GET.get("col"))
+    
+    game = Game.objects.get(id=pk)
+    
+    # current = 'white' if game.current == 'black' else 'black'
+    # a = game_obj.searialize_board()
+    # print(a)
+    # game.board = json.dumps(a)
+    # game.current = current
+    # game.save()
+
+
+
+    # if game.current == 'white' and game.white != request.user: #почему проверка только у белого?
+    #     return JsonResponse({"success": False})
+    return 
