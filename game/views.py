@@ -10,20 +10,49 @@ import json
 
 # Create your views here.
 def create_game(request):
+    color = request.POST.get('color')
+    print("ПОЛУЧЕН ЦВЕТ:", color)
+
+    
+
+    side = request.GET.get('side')
+    if not side:
+        return redirect('main:lobby')
     game_obj = GameBoard()
     game=Game(board=json.dumps(game_obj.searialize_board()))
-    game.white = request.user
+    if side == 'white':
+        game.white = request.user
+    elif side == 'black':
+        game.black = request.user
+
+    
+
     game.save()
     return redirect('game:render_game', pk=game.id)
     
 def render_game(request, pk):
     game = Game.objects.get(id=pk)
-    if game.white != request.user:
-        game.black = request.user
-        game.save()
-    
+    if not game:  
+        return redirect('main:lobby')
     return render(request, "game/index.html", context={'game_id':pk})
 
+def join_game(request):
+    id = request.GET.get('id')
+    if not id:
+        return redirect('main:lobby')
+    game=Game.objects.get(id=id)
+    if not game: 
+        return redirect('main:lobby')
+
+    if game.white and not game.black:
+        game.black = request.user
+    elif game.black and not game.white:
+        game.white = request.user
+    else: 
+        return redirect('main:lobby')
+    game.save()
+    
+    return redirect('game:render_game', pk=game.id)
 
 def get_board(request,pk):
     game = Game.objects.get(id=pk)

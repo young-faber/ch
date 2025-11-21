@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lobby</title>
+</head>
+<body>
+    <h1><p>lobby</p></h1>
+
+    <div style="display: flex; flex-direction: row; background-color: rgba(128, 128, 128, 0.129); justify-content: space-between; gap: 30px; padding: 10px;">
+
+        <div style="width: auto; flex: 1;">
+            <form action="{% url 'game:create_game' %}"  method="post">
+                {% csrf_token %}
+
+                <div class="create" style="display: flex; justify-content: center; flex-direction: column; background-color: rgba(0, 255, 255, 0.222);">
+                    <p>Выбери цвет:</p>
+
+                    <label>
+                        <input type="radio" name="color" value="white" style="width: 80px; height: 20px;">
+                        white
+                    </label>
+
+                    <label>
+                        <input type="radio" name="color" value="black" style="width: 80px; height: 20px;">
+                        black
+                    </label>
+
+                    <label>
+                        <input type="radio" name="color" value="random" style="width: 80px; height: 20px;">
+                        random
+                    </label><br>
+                    <button type="submit">Создать игру</button>
+                </div>
+            </form>
+        </div>
+
+
+        <div style="background-color: rgba(137, 43, 226, 0.316); display: flex; flex: 1;">
+            <a href="{% url 'user:logout' %}">
+                <button style="width: 20cap; height: 25cap; background-color: rgba(20, 50, 220, 0.538);">logout</button>
+            </a>
+        </div>
+
+        <div  style="background-color: rgba(214, 226, 43, 0.316); flex: 1;">
+            <form action="{% url 'game:join_game' %}">
+                <input type="text" name="id">
+                <button type="submit" style="width: 20cap; height: 25cap; background-color: rgba(20, 220, 137, 0.538);">connect</button>
+            </form>
+        </div>
+    </div>
+    
+</body>
+</html>

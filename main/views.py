@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 from user.forms import LoginForm
 from django.contrib import auth
 from django.views.generic.base import TemplateView
@@ -15,4 +15,4 @@ class IndexView(LoginView):
     
 
 def lobby(request): 
-    return redirect('/')
+    return render(request, 'main/lobby.html')

@@ -127,4 +127,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.MyUser'
 
-LOGIN_REDIRECT_URL = '/lobby'
+LOGIN_REDIRECT_URL = '/lobby' 

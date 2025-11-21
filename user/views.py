@@ -5,7 +5,7 @@ from user.forms import RegistrForm
 
 def logout_view(request):
     auth.logout(request)
-    return redirect("game/index.html")
+    return redirect("/")
 
 
 def registr_view(request):
