@@ -52,4 +52,7 @@ class GameUser(models.Model):
 
 
 class Move(models.Model):
-    pass
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='moves')
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    index = models.CharField(max_length=10)

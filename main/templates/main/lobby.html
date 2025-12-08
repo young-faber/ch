@@ -4,14 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lobby</title>
+
+    <style>
+        /* Спрятанный чекбокс (но не display:none) */
+        #joinToggle {
+            position: absolute;
+            left: -9999px;
+        }
+
+        /* Модалка по умолчанию скрыта */
+        #joinModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.45);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Когда чекбокс включён — показываем модалку */
+        #joinToggle:checked + #joinModal {
+            display: flex;
+        }
+    </style>
 </head>
 <body>
     <h1><p>lobby</p></h1>
 
+    <!-- Основной контейнер с 3 блоками -->
     <div style="display: flex; flex-direction: row; background-color: rgba(128, 128, 128, 0.129); justify-content: space-between; gap: 30px; padding: 10px;">
 
+        <!-- 1: создание игры -->
         <div style="width: auto; flex: 1;">
-            <form action="{% url 'game:create_game' %}"  method="post">
+            <form action="{% url 'game:create_game' %}" method="post">
                 {% csrf_token %}
 
                 <div class="create" style="display: flex; justify-content: center; flex-direction: column; background-color: rgba(0, 255, 255, 0.222);">
@@ -31,25 +59,65 @@
                         <input type="radio" name="color" value="random" style="width: 80px; height: 20px;">
                         random
                     </label><br>
+
                     <button type="submit">Создать игру</button>
                 </div>
             </form>
         </div>
 
-
-        <div style="background-color: rgba(137, 43, 226, 0.316); display: flex; flex: 1;">
+        <!-- 2: logout -->
+        <div style="background-color: rgba(137, 43, 226, 0.316); display: flex; flex: 1; align-items: center; justify-content: center;">
             <a href="{% url 'user:logout' %}">
                 <button style="width: 20cap; height: 25cap; background-color: rgba(20, 50, 220, 0.538);">logout</button>
             </a>
         </div>
 
-        <div  style="background-color: rgba(214, 226, 43, 0.316); flex: 1;">
-            <form action="{% url 'game:join_game' %}">
-                <input type="text" name="id">
-                <button type="submit" style="width: 20cap; height: 25cap; background-color: rgba(20, 220, 137, 0.538);">connect</button>
-            </form>
+        <!-- 3: кнопка Connect, которая откроет модалку -->
+        <div style="background-color: rgba(214, 226, 43, 0.316); flex: 1; display: flex; align-items: center; justify-content: center;">
+            <!-- Это не form, а label, который включает чекбокс ниже -->
+            <label for="joinToggle"
+                   style="padding: 10px 20px; background:#377dff; color:white;
+                          border-radius:6px; cursor:pointer; border:none;">
+                Connect
+            </label>
         </div>
     </div>
-    
+
+    <!-- Скрытый чекбокс и модалка ДОЛЖНЫ быть ВНЕ flex-контейнера -->
+
+    <!-- Скрытый чекбокс-переключатель -->
+    <input type="checkbox" id="joinToggle">
+
+    <!-- Модальное окно -->
+    <div id="joinModal">
+        <div style="
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            width:300px;
+            box-shadow:0 0 20px rgba(0,0,0,0.3);
+        ">
+            <h3>Войти в игру</h3>
+
+            <form method="get" action="{% url 'game:join_game' %}">
+                <input type="text" name="id" placeholder="ID игры"
+                    style="width:100%; padding:8px; margin:10px 0; border-radius:6px; border:1px solid #999;">
+
+                <button type="submit"
+                        style="padding:8px 15px; width:100%; background:#28a745; color:white; border:none; border-radius:6px;">
+                    Join
+                </button>
+            </form>
+
+            <!-- Кнопка закрытия -->
+            <label for="joinToggle"
+                style="display:block; margin-top:10px; text-align:center;
+                       padding:8px; background:#dc3545; color:white;
+                       border-radius:6px; cursor:pointer;">
+                Cancel
+            </label>
+        </div>
+    </div>
+
 </body>
 </html>
