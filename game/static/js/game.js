@@ -21,7 +21,7 @@ function renderBoard(boardData) {
       }
       board.appendChild(cell);
     }
-  }
+  } 
 }
 
 // function renderBoard(boardData) {
