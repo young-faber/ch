@@ -41,7 +41,9 @@ def render_game(request, pk):
     if not game:  
         return redirect('main:lobby')
     color = 'white' if game.white == request.user else 'black'
-    return render(request, "game/index.html", context={'game_id':pk, 'color': color})
+    last_move = Move.objects.filter(game=game).order_by("id").last()
+    last_move_id = last_move.id if last_move else 0
+    return render(request, "game/index.html", context={'game_id':pk, 'color': color, 'last_move_id': last_move_id})
 
 @login_required
 def join_game(request):

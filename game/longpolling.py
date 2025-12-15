@@ -9,11 +9,11 @@ from game.models import Game, Move
 async def long_polling_get_board(request, pk):
     game = await sync_to_async(get_object_or_404)(Game, id=pk)
 
-    move_id = request.GET.get("move_id")
+    move_id = int(request.GET.get("move_id"))
 
     print(game)
 
-    timeout_sec = 5  # sec
+    timeout_sec = 10  # sec
     endtime = time.time() + timeout_sec
     while True:
 

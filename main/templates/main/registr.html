@@ -1,0 +1,24 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/registr.css' %}" />
+    <title>registr</title>
+</head>
+<body>
+    <form action="" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                <label for="">{{field.label}}</label>
+                {{field}}
+            </div>
+        {% endfor %}
+        <input type="submit" value="enter">
+    </form>
+    <a href="{% url 'main:index' %}" class="login-link">вход в аккаунт</a>
+</body>
+</html>

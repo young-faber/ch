@@ -240,10 +240,26 @@ class GameBoard:  # или игра?
                 if isinstance(self.board[7][7], Rook):
                     rook: Rook = self.board[7][7]
                     if rook.is_first_move:
-                        if self.is_free_move([7, 7], king):
-                            king.moves.append([7,7])
-                            self.white_attack_map[7][7] += 1
-
+                        if self.is_free_move([7, 6], king):
+                            king.moves.append([7,6])
+                            self.white_attack_map[7][6] += 1
+            if king.side == 'black':
+                print("king white")
+                if isinstance(self.board[0][0], Rook):#если че в 212,213,216 было не self, а game
+                    print("rook check")
+                    rook: Rook = self.board[0][0]
+                    if rook.is_first_move: 
+                        print("rook first move check")
+                        if self.is_free_move([0, 1], king):
+                            print("castle is possible") 
+                            king.moves.append([0,2])
+                            self.white_attack_map[0][2] += 1 
+                if isinstance(self.board[0][7], Rook):
+                    rook: Rook = self.board[0][7]
+                    if rook.is_first_move:
+                        if self.is_free_move([0, 6], king):
+                            king.moves.append([0,6])
+                            self.white_attack_map[0][6] += 1
             
             
                 # if self.board[7][7] is Rook:
