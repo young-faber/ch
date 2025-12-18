@@ -1,9 +1,8 @@
 from .chess_pieces import Piece, Pawn, Rook, Knight, Bishop, Queen, King, pieces_cls
 
-# from game.chess_pieces import Piece, Pawn, Knight, Bishop, Rook, Queen, King
 from pprint import pprint
 from typing import List, Dict
-from copy import deepcopy # <----- ?
+from copy import deepcopy 
 import json
 
 
@@ -42,9 +41,9 @@ class GameBoard:  # или игра?
             # self.board[0][6] = Knight("black", 0, 6)
 
             self.board[7][0] = Rook("white", 7, 0)
-            self.board[0][0] = Rook("black", 0, 7)
+            self.board[0][0] = Rook("black", 0, 0)
             self.board[7][7] = Rook("white", 7, 7)
-            self.board[0][7] = Rook("black", 0, 0)
+            self.board[0][7] = Rook("black", 0, 7)
         else:
             if not board_str:
                 raise TypeError("ты не передал доску")
@@ -112,14 +111,12 @@ class GameBoard:  # или игра?
         if move in figure.moves:
             #на самом деле не временно, если перенести то что касается мата 
             # Временно делаем ход
-            temp_piece = self.board[row2][col2]
             self.board[row2][col2] = figure
             self.board[row][col] = None
-            old_row, old_col = figure.row, figure.col
             figure.row = row2
             figure.col = col2
 
-            if isinstance(figure, Pawn): #Pawn
+            if isinstance(figure, Pawn): 
                 pawn: Pawn = figure
                 if pawn.side == 'white':
                     if row2 == 0:
@@ -129,7 +126,27 @@ class GameBoard:  # или игра?
                     if row2 == 7:
                         print('p_pb')
                         return 'pawn_promotion'
-
+                    
+            if isinstance(figure, King):
+                print('check1')
+                king: King = figure
+                if col2 == 2: 
+                    print('check2')
+                    if king.side == 'black':
+                        print('check3')
+                        rook: Rook = self.board[0][0]
+                        rook.col = 3
+                        self.board[0][3] = self.board[0][0]
+                        self.board[0][0] = None
+                elif col2 == 6:
+                    if king.side == 'black':
+                        rook: Rook = self.board[0][7]
+                        rook.col = 5
+                        self.board[0][5] = self.board[0][7]
+                        self.board[0][7] = None
+                    #white side 
+                
+                print(self.board)
             # # Пересчитываем карту атак противника после хода
             # enemy_side = "black" if self.current == "white" else "white"
             # self.calc_attack_map(enemy_side)

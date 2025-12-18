@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -120,7 +123,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'game/static']
+STATICFILES_DIRS = [BASE_DIR / 'game/static', BASE_DIR / 'main/static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -132,3 +135,12 @@ AUTH_USER_MODEL = 'user.MyUser'
 LOGIN_REDIRECT_URL = '/lobby' 
 
 EMAIL_HOST = 'smtp.yandex.ru'
+
+EMAIL_PORT = 465
+
+EMAIL_USE_SSL = True
+
+EMAIL_HOST_USER = 'MarsEisen@yandex.com'
+
+
+EMAIL_HOST_PASSWORD = os.getenv('YANDEX_PASSWORD')
