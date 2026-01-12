@@ -23,6 +23,7 @@ class RegistrView(FormView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
+        # здесь мы должны сделать 
         return super().form_valid(form)
     
 

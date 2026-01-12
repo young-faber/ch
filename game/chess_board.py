@@ -2,7 +2,7 @@ from .chess_pieces import Piece, Pawn, Rook, Knight, Bishop, Queen, King, pieces
 
 from pprint import pprint
 from typing import List, Dict
-from copy import deepcopy 
+from copy import deepcopy  # noqa: F401
 import json
 
 
@@ -95,7 +95,10 @@ class GameBoard:  # или игра?
                 else:
                     print('2 dsrl sccs: king black = true')
                     self.kb = [row, col]
-        self.calc_attack_map(side=current)
+        result = self.calc_attack_map(side=current)
+        if result == 'шах': 
+            self.is_check(current)
+
 
     def move_figure(self, row, col, row2, col2):
         figure: Piece = self.board[row][col]
@@ -145,7 +148,7 @@ class GameBoard:  # или игра?
                         self.board[0][5] = self.board[0][7]
                         self.board[0][7] = None
                     #white side 
-                
+
                 print(self.board)
             # # Пересчитываем карту атак противника после хода
             # enemy_side = "black" if self.current == "white" else "white"
@@ -204,10 +207,10 @@ class GameBoard:  # или игра?
                 figure.moves.remove(move)
 
     def calc_attack_map(
-
         self, side
     ):#тут для тех кому поставили шах, if check true, calc_defence_map, для каждой фигуры как калк атак мэп, спасает 
         # для каждой фигуры считает calc_attack_moves + clean_attack_moves
+        state = 'ок'
         for row in range(8):
             for col in range(8):
                 figure: Piece = self.board[row][col]
@@ -216,14 +219,6 @@ class GameBoard:  # или игра?
                     print(figure.appearence, figure.moves)
                     self.clean_attack_moves(figure)
                     print("Х", figure.appearence, figure.moves)
-                    if isinstance(figure, King):
-                        if side == "black":
-                            self.kb = [row,col]
-                        elif side == "white":
-                            self.kw = [row,col]
-                        self.is_castling_possible(side)
-                        print("castling check happend")
-                        
 
                     for move in figure.moves:
                         r, c = move  # переименовали переменные
@@ -231,6 +226,60 @@ class GameBoard:  # или игра?
                             self.black_attack_map[r][c] += 1
                         elif side == "white":
                             self.white_attack_map[r][c] += 1
+
+                    if isinstance(figure, King):
+                        if side == "black":
+                            self.kb = [row,col]
+                        elif side == "white":
+                            self.kw = [row,col]
+                        self.is_castling_possible(side)
+                        print("castling check happend")                    
+
+                    # если король под шахов, пересчитываю всё, ищем короля на доске, если он не подшахом, добавляем этот ход, else mate
+                    if side == 'black':  
+                        king_cell = self.white_attack_map[self.kb[0]][self.kb[1]]
+                        if king_cell > 0:
+                            print('ШАХ')
+                            
+                             
+                    if side == 'white':
+                        king_cell = self.black_attack_map[self.kw[0]][self.kw[1]]
+                        if king_cell > 0:
+                            print('ШАХ')
+                            state = 'шах'
+        return state                 
+    
+    def is_check(self, side):
+        opponent_color = 'white' if side == 'black' else 'black'
+        for row in range(8):
+            for col in range(8):
+
+                figure: Piece = self.board[row][col]
+                if figure and figure.side == side:
+                    for move in figure.moves.copy():
+                        row2, col2 = move
+                        tpm_cell = self.board[row2][col2]
+                        self.board[row2][col2] = figure
+                        self.board[row][col] = None
+                        figure.row = row2
+                        figure.col = col2
+                        self.calc_attack_map(opponent_color)
+                        if side == 'black':
+                            king_cell = self.white_attack_map[self.kb[0]][self.kb[1]] #два цвета, найти короля
+                        if side == 'white':
+                            king_cell = self.black_attack_map[self.kb[0]][self.kb[1]]
+                            
+                        if king_cell > 0:
+                            figure.moves.remove(move)
+                            
+                        self.board[row2][col2] = tpm_cell
+                        self.board[row][col] = figure
+                        figure.row = row
+                        figure.col = col
+                        
+                        
+                                    
+
 
         
     def is_castling_possible(self, side):

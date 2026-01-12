@@ -47,6 +47,18 @@ class Piece():
                 if self.is_valid_move(row, col):
                     self.moves.append([row, col])
 
+    def calc_defence_moves(self):
+        ''''''
+        # self.moves = []
+        # for row in range(8):
+        #     for col in range(8):
+        #             cell = row, col
+        #         if isinstance(cell, King):
+        #             king = cell
+        #         if self.is_valid_move(row, col):
+        #             if 
+        #             self.moves.append([row, col])
+
         
 
 class Pawn(Piece):

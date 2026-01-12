@@ -114,10 +114,7 @@ def move_figure(request,pk):
         game.board = json.dumps(a)
         game.save()
         if status == 'success':
-            game_obj.calc_attack_map("white")
-            print("calc map succes w")
-            game_obj.calc_attack_map("black")
-            print("calc map succes b")
+            
             current = 'white' if game.current == 'black' else 'black'
             print(a)
             game.current = current
