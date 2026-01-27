@@ -47,17 +47,6 @@ class Piece():
                 if self.is_valid_move(row, col):
                     self.moves.append([row, col])
 
-    def calc_defence_moves(self):
-        ''''''
-        # self.moves = []
-        # for row in range(8):
-        #     for col in range(8):
-        #             cell = row, col
-        #         if isinstance(cell, King):
-        #             king = cell
-        #         if self.is_valid_move(row, col):
-        #             if 
-        #             self.moves.append([row, col])
 
         
 
@@ -119,8 +108,6 @@ class Rook(Piece):
             return True
         return False
     
-    # def calc_attack_moves(self):
-    #     pass
 
 class Queen(Piece):
     def __init__(self, side, row, col, is_first_move = True):
@@ -145,13 +132,13 @@ class King(Piece):
     
 if __name__ == '__main__':
     f = Pawn('black', 1, 1)
-    print(isinstance(f, Piece))
-    print(f.row)
+    # print(isinstance(f, Piece))
+    # print(f.row)
     f.row = 2
     f.col = 2
-    print(f.row)
-    print(str(f))
-    print('1')
+    # print(f.row)
+    # print(str(f))
+    # print('1')
 
 
 pieces_cls = {'Pawn': Pawn, 'Rook': Rook, 'Queen':Queen, 'King':King, 'Knight': Knight, 'Bishop': Bishop}

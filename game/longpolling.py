@@ -11,7 +11,7 @@ async def long_polling_get_board(request, pk):
 
     move_id = int(request.GET.get("move_id"))
 
-    print(game)
+    # # print(game)
 
     timeout_sec = 10  # sec
     endtime = time.time() + timeout_sec
@@ -21,11 +21,13 @@ async def long_polling_get_board(request, pk):
             return Move.objects.filter(game=game, id__gt=move_id).order_by("id").last()
         
         last_move = await sync_to_async(get_last_move)()
-        print('LAST', last_move)
+        
 
         if last_move:
+            # print({'move_id': last_move.id})
             return JsonResponse({'move_id': last_move.id})
 
         if time.time() > endtime:
+            # print({"move_id": None})
             return JsonResponse({"move_id": None})
         await asyncio.sleep(1)

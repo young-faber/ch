@@ -15,6 +15,6 @@ while 1:
     for letter in word:
         if letter in '1234567890.':
             word:str = word.remove(letter)
-    print(word)
+    # print(word)
     words.remove(word)
 

@@ -1,5 +1,6 @@
 from django.urls import path
-from main.views import IndexView, lobby, RegistrView
+from user.views import  RegistrView
+from main.views import IndexView, lobby
 app_name = 'main'
 
 urlpatterns = [

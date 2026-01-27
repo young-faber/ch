@@ -12,7 +12,7 @@ import random
 # Create your views here.
 def create_game(request):
     color = request.POST.get('color')
-    print("ПОЛУЧЕН ЦВЕТ:", color)
+    # print("ПОЛУЧЕН ЦВЕТ:", color)
     
     if not color:
         return redirect('main:lobby')
@@ -24,14 +24,14 @@ def create_game(request):
         game.black = request.user
     if color == 'random':
         result = bool(random.getrandbits(1))
-        print(result)
+        # print(result)
         if result:
             game.white = request.user
         else:
             game.black = request.user
 
     game.save()
-    print(1)
+    # print(1)
     return redirect('game:render_game', pk=game.id)
 
     
@@ -53,7 +53,6 @@ def join_game(request):
     game=Game.objects.get(id=id)
     if not game: 
         return redirect('main:lobby')
-    
 
 
     if game.white and not game.black:
@@ -116,7 +115,7 @@ def move_figure(request,pk):
         if status == 'success':
             
             current = 'white' if game.current == 'black' else 'black'
-            print(a)
+            # print(a)
             game.current = current
             game.save()
             return JsonResponse({"success": True, 'from_row': from_row, 'from_col':from_col, 'to_row': to_row, 'to_col': to_col})
