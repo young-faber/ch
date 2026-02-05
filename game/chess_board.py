@@ -265,23 +265,33 @@ class GameBoard:  # или игра?
                 figure: Piece = self.board[row][col]
                 if figure and figure.side == side:
                     for move in figure.moves.copy():
-                        # походили
+                        # симулируем ход
                         row2, col2 = move
                         tpm_cell = self.board[row2][col2]
                         self.board[row2][col2] = figure
                         self.board[row][col] = None
                         figure.row = row2
                         figure.col = col2
-                        # убрался ли шах после хода 
+
+                        # пересчитываем карту атак соперника
                         self.calc_attack_map(opponent_color)
+
+                        # определяем текущую позицию короля:
+                        # если мы симулировали ход королём — используем его новые координаты,
+                        # иначе берём координаты короля из доски (self.kb / self.kw)
+                        if isinstance(figure, King):
+                            kr, kc = figure.row, figure.col
+                        else:
+                            kr, kc = (self.kb if side == 'black' else self.kw)
+
+                        # если после хода король всё ещё под атакой — удаляем этот ход
                         if side == 'black':
-                            r, c = self.kb
-                            if self.white_attack_map[r][c] != 0:
+                            if self.white_attack_map[kr][kc] != 0:
                                 figure.moves.remove(move)
-                        if side == 'white':
-                            r, c = self.kw
-                            if self.black_attack_map[r][c] != 0:
+                        else:  # side == 'white'
+                            if self.black_attack_map[kr][kc] != 0:
                                 figure.moves.remove(move)
+
                         # вернули как было
                         self.board[row2][col2] = tpm_cell
                         self.board[row][col] = figure
