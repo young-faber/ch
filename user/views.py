@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView
 from django.contrib.auth import login
 import random
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, send_mail
 
 
 def logout_view(request):
@@ -23,13 +23,12 @@ class RegistrView(FormView):
         code = "".join([str(random.randint(0, 9)) for i in range(6)])
         user.code = code
         user.save()
-        msg = EmailMultiAlternatives(
-            subject="код для верификации в шахматах",
-            body=f"Вы пытаетесь зарегестрироваться в онлайн шахматах, введите следующий код в браузерном окне {code}",
+        send_mail(subject="код для верификации в шахматах",
+            message=f"Вы пытаетесь зарегестрироваться в онлайн шахматах, введите следующий код в браузерном окне {code}",
             from_email="MarsEisen@yandex.com",
-            to=[user.email],
-        )
-        msg.send()
+            recipient_list=[user.email],
+            fail_silently=False)
+       
         login(self.request, user)
         # здесь мы должны сделать
         return super().form_valid(form)

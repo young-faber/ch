@@ -214,6 +214,11 @@ class GameBoard:  # или игра?
     def calc_attack_map(
         self, side
     ):
+        if side == 'white':
+             self.white_attack_map = [[0]*8 for _ in range(8)]
+        else: 
+            self.black_attack_map = [[0]*8 for _ in range(8)]
+
         state = 'ок'
         for row in range(8):
             for col in range(8):
@@ -321,13 +326,13 @@ class GameBoard:  # или игра?
                         if self.is_free_move([0, 1], king):
                             # print("castle is possible") 
                             king.moves.append([0,2])
-                            self.white_attack_map[0][2] += 1 
+                            self.black_attack_map[0][2] += 1 
                 if isinstance(self.board[0][7], Rook):
                     rook: Rook = self.board[0][7]
                     if rook.is_first_move:
                         if self.is_free_move([0, 6], king):
                             king.moves.append([0,6])
-                            self.white_attack_map[0][6] += 1
+                            self.black_attack_map[0][6] += 1
             
             
                 # if self.board[7][7] is Rook:

@@ -36,7 +36,9 @@
 
     <!-- Основной контейнер с 3 блоками -->
     <div style="display: flex; flex-direction: row; background-color: rgba(128, 128, 128, 0.129); justify-content: space-between; gap: 30px; padding: 10px;">
-
+        {% if not request.user.is_verifed %}
+            Зайди на почту
+        {% endif %}
         <!-- 1: создание игры -->
         <div style="width: auto; flex: 1;">
             <form action="{% url 'game:create_game' %}" method="post">

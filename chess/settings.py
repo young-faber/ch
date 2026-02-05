@@ -133,12 +133,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user.MyUser'
 
 LOGIN_REDIRECT_URL = '/lobby' 
+LOGIN_URL = '/'
 
 EMAIL_HOST = 'smtp.yandex.ru'
 
 EMAIL_PORT = 465
 
 EMAIL_USE_SSL = True
+
+EMAIL_USE_TLS = False
 
 EMAIL_HOST_USER = os.getenv('YANDEX_EMAIL')
 
