@@ -16,7 +16,7 @@ def logout_view(request):
 class RegistrView(FormView):
     form_class = RegistrForm
     template_name = "main/registr.html"
-    success_url = reverse_lazy("main:lobby")
+    success_url = reverse_lazy("main:verification")
 
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -28,6 +28,7 @@ class RegistrView(FormView):
             from_email="MarsEisen@yandex.com",
             recipient_list=[user.email],
             fail_silently=False)
+        print('email was sent')
        
         login(self.request, user)
         # здесь мы должны сделать

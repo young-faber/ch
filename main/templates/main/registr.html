@@ -10,15 +10,24 @@
 </head>
 <body>
     <form action="" method="post">
+        
+        
         {% csrf_token %}
+        
         {% for field in form %}
             <div>
                 <label for="">{{field.label}}</label>
                 {{field}}
+
+                {% if field.errors %}
+                <div class="error">
+                {{ field.errors }}
+                </div>
             </div>
+        {% endif %}
         {% endfor %}
         <input type="submit" value="enter">
-        <a href="{% url 'main:index' %}" class="login-link">вход в аккаунт</a>
+        <a href="{% url 'main:verification' %}" class="login-link">вход в аккаунт</a>
     </form>
 </body>
 </html>

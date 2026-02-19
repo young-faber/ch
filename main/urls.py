@@ -1,10 +1,11 @@
 from django.urls import path
 from user.views import  RegistrView
-from main.views import IndexView, lobby
+from main.views import IndexView, lobby, verification
 app_name = 'main'
 
 urlpatterns = [
     path("", IndexView.as_view(), name="index"),
     path("lobby", lobby, name="lobby"),
-    path('registr', RegistrView.as_view(), name='registr')
+    path('registr', RegistrView.as_view(), name='registr'),
+    path('verification', verification, name='verification')
 ]
