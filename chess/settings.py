@@ -28,9 +28,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '.trycloudflare.com']
+ALLOWED_HOSTS = ['127.0.0.1', '.trycloudflare.com', 'chess.romanenko-coding.ru']
 
-CSRF_TRUSTED_ORIGINS = ['https://*.trycloudflare.com']
+CSRF_TRUSTED_ORIGINS = ['https://*.trycloudflare.com', 'https://chess.romanenko-coding.ru']
 
 
 # Application definition
