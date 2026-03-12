@@ -1,0 +1,36 @@
+#board {
+    display: grid;
+    grid-template-columns: repeat(8, 60px);
+    width: 480px;
+    margin: 20px auto;
+}
+
+.cell {
+    height: 60px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.cell img.piece {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+}
+
+.light { 
+    background-color: #fff; 
+}
+
+.dark { 
+    background-color: #769656; 
+}
+
+.possible-move {
+    background-color: rgba(255, 255, 0, 0.3) !important;
+}
