@@ -6,51 +6,59 @@ function getPieceInfo(piece) {
   if (!piece) return null;
 
   const letterMap = {
-    'K': 'king',
-    'Q': 'queen',
-    'R': 'rook',
-    'B': 'bishop',
-    'N': 'knight',
-    'P': 'pawn',
+    K: "king",
+    Q: "queen",
+    R: "rook",
+    B: "bishop",
+    N: "knight",
+    P: "pawn",
   };
 
   // Новая логика: если формат "Kw", "Qb" и т.д.
-  if (typeof piece === 'string' && piece.length === 2) {
+  if (typeof piece === "string" && piece.length === 2) {
     const pieceType = piece[0]; // 'K', 'Q', 'R' и т.д.
     const color = piece[1]; // 'w' или 'b'
-    
+
     if (letterMap[pieceType]) {
       return {
         prefix: color, // 'w' или 'b'
-        type: letterMap[pieceType] // 'king', 'queen' и т.д.
+        type: letterMap[pieceType], // 'king', 'queen' и т.д.
       };
     }
   }
 
   // Старая логика для буквы (одиночный символ)
-  if (typeof piece === 'string' && piece.length === 1) {
+  if (typeof piece === "string" && piece.length === 1) {
     const upper = piece.toUpperCase();
     if (letterMap[upper]) {
       const type = letterMap[upper];
-      const prefix = piece === upper ? 'w' : 'b';
+      const prefix = piece === upper ? "w" : "b";
       return { prefix, type };
     }
   }
 
   // Юникод
   const unicodeMap = {
-    '♔': ['w','king'], '♕': ['w','queen'], '♖': ['w','rook'],
-    '♗': ['w','bishop'], '♘': ['w','knight'], '♙': ['w','pawn'],
-    '♚': ['b','king'], '♛': ['b','queen'], '♜': ['b','rook'],
-    '♝': ['b','bishop'], '♞': ['b','knight'], '♟': ['b','pawn']
+    "♔": ["w", "king"],
+    "♕": ["w", "queen"],
+    "♖": ["w", "rook"],
+    "♗": ["w", "bishop"],
+    "♘": ["w", "knight"],
+    "♙": ["w", "pawn"],
+    "♚": ["b", "king"],
+    "♛": ["b", "queen"],
+    "♜": ["b", "rook"],
+    "♝": ["b", "bishop"],
+    "♞": ["b", "knight"],
+    "♟": ["b", "pawn"],
   };
-  
+
   if (unicodeMap[piece]) {
     return { prefix: unicodeMap[piece][0], type: unicodeMap[piece][1] };
   }
 
   // Объект {color:'w', type:'rook'}
-  if (typeof piece === 'object' && piece.color && piece.type) {
+  if (typeof piece === "object" && piece.color && piece.type) {
     return { prefix: piece.color, type: piece.type };
   }
 
@@ -102,7 +110,9 @@ function renderBoard(boardData) {
 
 function sendPromotionRequest(piece) {
   const gameId = localStorage.getItem("game_id");
-  fetch(`/game/pawn_promotion/${gameId}/?piece=${piece}&row=${window.row}&col=${window.col}`)
+  fetch(
+    `/game/pawn_promotion/${gameId}/?piece=${piece}&row=${window.row}&col=${window.col}`,
+  )
     .then((r) => r.json())
     .then((data) => {
       if (!data.success) {
@@ -118,6 +128,13 @@ board.addEventListener("click", (e) => {
   const clickedCell = e.target.closest(".cell");
   if (!clickedCell || !board.contains(clickedCell)) return;
 
+  const isMyTurn = String(document.body.dataset.isMyTurn).toLowerCase() === "true";
+
+  // ВЕТКА 3: Если не мой ход, блокируем клики
+  if (!isMyTurn) {
+    alert("Ждите вашего хода");
+    return;
+  }
   const cells = Array.from(document.querySelectorAll(".cell"));
   const index = cells.indexOf(clickedCell);
   const dispRow = Math.floor(index / 8);
@@ -133,7 +150,9 @@ board.addEventListener("click", (e) => {
     const fromCol = selectedCell % 8;
 
     let gameId = localStorage.getItem("game_id");
-    fetch(`/game/move_figure/${gameId}/?from_row=${fromRow}&from_col=${fromCol}&to_row=${row}&to_col=${col}`)
+    fetch(
+      `/game/move_figure/${gameId}/?from_row=${fromRow}&from_col=${fromCol}&to_row=${row}&to_col=${col}`,
+    )
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
@@ -141,7 +160,8 @@ board.addEventListener("click", (e) => {
             window.row = data.to_row;
             window.col = data.to_col;
             document.getElementById("promotion-dialog").style.display = "block";
-            const promotionButtons = document.querySelectorAll(".promotion-button");
+            const promotionButtons =
+              document.querySelectorAll(".promotion-button");
             promotionButtons.forEach((button) => {
               button.onclick = () => {
                 const piece = button.getAttribute("data-piece");
@@ -159,18 +179,24 @@ board.addEventListener("click", (e) => {
       .then((response) => response.json())
       .then((data) => {
         renderBoard(data.board);
-        document.querySelectorAll(".possible-move").forEach((cell) => cell.classList.remove("possible-move"));
+        document
+          .querySelectorAll(".possible-move")
+          .forEach((cell) => cell.classList.remove("possible-move"));
         selectedCell = null;
       })
       .catch((err) => {
         console.error("Move error:", err);
-        document.querySelectorAll(".possible-move").forEach((cell) => cell.classList.remove("possible-move"));
+        document
+          .querySelectorAll(".possible-move")
+          .forEach((cell) => cell.classList.remove("possible-move"));
       });
   }
   // ВЕТКА 2: обычный клик по клетке
   else {
     selectedCell = row * 8 + col;
-    document.querySelectorAll(".possible-move").forEach((cell) => cell.classList.remove("possible-move"));
+    document
+      .querySelectorAll(".possible-move")
+      .forEach((cell) => cell.classList.remove("possible-move"));
 
     let gameId = localStorage.getItem("game_id");
     fetch(`/game/get_moves/${gameId}/?row=${row}&col=${col}`)
@@ -188,6 +214,9 @@ board.addEventListener("click", (e) => {
   }
 });
 
+
+
+
 function loadBoard(gameId) {
   fetch("/game/get_board/" + gameId)
     .then((response) => response.json())
@@ -200,12 +229,28 @@ function pollForUpdates() {
   let game_id = localStorage.getItem("game_id");
 
   fetch(`/game/long_polling/get_board/${game_id}?move_id=${move_id}`)
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Сервер вернул ошибку: " + response.status);
+      }
+      return response.json();
+    })
     .then((data) => {
       console.log(data);
+      if (data.game_over) {
+        alert("Игра окончена: " + data.game_over);
+        window.location.href = "/lobby";
+        return;
+      }
       if (data.move_id === null) return;
       localStorage.setItem("move_id", data.move_id);
       loadBoard(game_id);
+      //alert(data.is_my_turn)
+      document.body.dataset.isMyTurn = !data.is_my_turn;
+    })
+    .catch((error) => {
+      alert("Ошибка при получении обновлений: " + error);
+      return;
     })
     .finally(() => {
       setTimeout(pollForUpdates, 200);
@@ -216,4 +261,20 @@ document.addEventListener("DOMContentLoaded", () => {
   let game_id = localStorage.getItem("game_id");
   loadBoard(game_id);
   pollForUpdates();
+});
+
+// сдаться
+defeat = document.getElementById("defeat");
+defeat.addEventListener("click", (e) => {
+  let gameId = localStorage.getItem("game_id");
+  fetch(`/game/defeat/${gameId}/`)
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        alert("Вы сдались. Игра окончена.");
+        localStorage.removeItem("game_id");
+        localStorage.removeItem("move_id");
+        window.location.href = "/lobby";
+      }
+    });
 });

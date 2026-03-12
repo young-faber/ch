@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from user.decorators import verified_required
 from django.http.response import JsonResponse
 from game.chess_board import GameBoard
 from game.models import Game, Move
 from game.chess_pieces import Piece
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 import json
 import random
 
@@ -38,14 +41,25 @@ def create_game(request):
 def render_game(request, pk):
     game = Game.objects.get(id=pk)
     user = request.user
+    current_player = request.user
     if not game:  
         return redirect('main:lobby')
     color = 'white' if game.white == request.user else 'black'
     last_move = Move.objects.filter(game=game).order_by("id").last()
     last_move_id = last_move.id if last_move else 0
-    return render(request, "game/index.html", context={'game_id':pk, 'color': color, 'last_move_id': last_move_id})
+    is_my_turn = (game.current == 'white' and game.white == request.user) or \
+                 (game.current == 'black' and game.black == request.user)
+    
+    return render(request, "game/index.html", context={
+        'game_id': pk, 
+        'color': color, 
+        'last_move_id': last_move_id,
+        'current_player': current_player,
+        'is_my_turn': is_my_turn  # Добавляем флаг
+    })
 
-@login_required
+
+# @verified_required
 def join_game(request):
     id = request.GET.get('id')
     if not id:
@@ -144,3 +158,46 @@ def pawn_promotion(request, pk):
 
 def long_polling_get_board(request, pk):
     pass    
+
+def defeat(request, pk):
+    loser = request.user
+    game = Game.objects.get(id=pk)
+    if loser == game.white:
+        game.winner = game.black
+    else:
+        game.winner = game.white
+    game.status = 'finished'
+    game.save()
+
+    return JsonResponse({"success": True})
+
+@login_required
+def surrender_game(request, pk):
+    """Сдаться в игре"""
+    try:
+        game = Game.objects.get(id=pk)
+        
+        # Проверяем, что пользователь участвует в игре
+        if request.user != game.white and request.user != game.black:
+            return JsonResponse({'error': 'Вы не участник этой игры'}, status=403)
+        
+        # ✅ Проверяем, что игра ещё не завершена
+        if game.status == 'finished':
+            return JsonResponse({'error': 'Игра уже завершена'}, status=400)
+        
+        # Определяем победителя (противник текущего пользователя)
+        if request.user == game.white:
+            game.winner = game.black
+        else:
+            game.winner = game.white
+        
+        # Завершаем игру
+        game.status = 'finished'
+        game.save()
+        
+        return JsonResponse({'success': True, 'message': 'Вы сдались'})
+    
+    except Game.DoesNotExist:
+        return JsonResponse({'error': 'Игра не найдена'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

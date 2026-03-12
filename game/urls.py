@@ -1,5 +1,5 @@
 from django.urls import path
-from game.views import get_board, create_game, get_moves, move_figure, render_game, pawn_promotion, join_game
+from game.views import get_board, create_game, get_moves, move_figure, render_game, pawn_promotion, join_game, defeat, surrender_game
 from game.longpolling import long_polling_get_board
 
 app_name = 'game'
@@ -12,6 +12,8 @@ urlpatterns = [
     path('<int:pk>', render_game, name='render_game'),
     path('pawn_promotion/<int:pk>/', pawn_promotion, name='pawn_promotion'),
     path('join_game', join_game, name='join_game'),
-    path('long_polling/get_board/<int:pk>', long_polling_get_board, name='long_polling_get_board')
+    path('long_polling/get_board/<int:pk>', long_polling_get_board, name='long_polling_get_board'),
+    path('defeat/<int:pk>/', defeat, name='defeat'),
+    path('surrender/<int:pk>/', surrender_game, name='surrender_game'),
 ] 
 

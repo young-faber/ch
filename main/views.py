@@ -3,7 +3,9 @@ from user.forms import LoginForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-# load_dotenv()
+from user.models import MyUser
+from game.models import Game
+from django.db.models import Q  
 
 class IndexView(LoginView):
     form_class = LoginForm
@@ -15,11 +17,18 @@ class IndexView(LoginView):
 
 @login_required
 def lobby(request): 
-    if request.user and not request.user.is_verifed:
+    if request.user and not request.user.is_verified:
         #return redirect('main:lobby')
         pass
-        
-    return render(request, 'main/lobby.html')
+    
+    # Подсчитать количество завершённых игр пользователя
+    games_played = Game.objects.filter(
+        Q(white=request.user) | Q(black=request.user),  # Белые ИЛИ Чёрные фигуры
+        status="finished"  # И статус "завершена"
+    ).count()
+    
+    return render(request, 'main/lobby.html', {'games_played': games_played})
+
 
 def verification(request):
     if request.method == 'GET':
@@ -27,7 +36,7 @@ def verification(request):
     else:
         code = request.POST.get('code')
         if code == request.user.code:
-            request.user.is_verifed = True
+            request.user.is_verified = True
             request.user.save()
             return redirect('main:lobby')
         else:

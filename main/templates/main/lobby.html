@@ -36,7 +36,7 @@
 
     <!-- Основной контейнер с 3 блоками -->
     <div style="display: flex; flex-direction: row; background-color: rgba(128, 128, 128, 0.129); justify-content: space-between; gap: 30px; padding: 10px;">
-        {% if not request.user.is_verifed %}
+        {% if not request.user.is_verified %}
             Зайди на почту
         {% endif %}
         <!-- 1: создание игры -->
@@ -121,7 +121,9 @@
         </div>
     </div>
 
-    <div>{{request.user}}</div>
+    <div>1{{request.user}}</div>
+    <div>Игр сыграно {{games_played}}<div>
+
 
 </body>
 </html>

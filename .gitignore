@@ -1,6 +1,7 @@
 __pycache__
 db.sqlite3
 .env
+.env-prod
 .vscode
 
 .DS_Store
