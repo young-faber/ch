@@ -6,124 +6,308 @@
     <title>Lobby</title>
 
     <style>
-        /* Спрятанный чекбокс (но не display:none) */
-        #joinToggle {
-            position: absolute;
-            left: -9999px;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #e1bee7);
+            margin: 0;
+            padding: 0;
+            color: #333;
         }
 
-        /* Модалка по умолчанию скрыта */
+        h1 {
+            text-align: center;
+            margin: 30px 0;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #5e35b1;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* User card */
+        .user-card {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 18px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+
+        .user-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .user-card .icon {
+            font-size: 22px;
+        }
+
+        .user-card .label {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .user-card .name {
+            font-weight: 600;
+            color: #5e35b1;
+        }
+
+        /* Main container */
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            gap: 30px;
+            padding: 20px 40px;
+            margin-top: 120px;
+        }
+
+        .block {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border-radius: 16px;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .block:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Create Game */
+        .create {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .create p {
+            margin: 0;
+            font-weight: 600;
+            color: #5e35b1;
+        }
+
+        .create label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .create input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #5e35b1;
+            cursor: pointer;
+        }
+
+        .create button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6a1b9a, #8e24aa);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .create button:hover {
+            background: linear-gradient(135deg, #8e24aa, #ab47bc);
+            transform: translateY(-2px);
+        }
+
+        /* Logout button */
+        .logout-block button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #d32f2f, #f44336);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .logout-block button:hover {
+            background: linear-gradient(135deg, #f44336, #e57373);
+            transform: translateY(-2px);
+        }
+
+        /* Connect button */
+        .connect-block label {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #0288d1, #03a9f4);
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .connect-block label:hover {
+            background: linear-gradient(135deg, #03a9f4, #29b6f6);
+            transform: translateY(-2px);
+        }
+
+        /* Modal */
         #joinModal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.45);
+            background: rgba(0,0,0,0.5);
             display: none;
             justify-content: center;
             align-items: center;
+            z-index: 1000;
         }
 
-        /* Когда чекбокс включён — показываем модалку */
         #joinToggle:checked + #joinModal {
             display: flex;
         }
+
+        #joinModal .modal-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 16px;
+            width: 320px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        #joinModal .modal-content h3 {
+            margin: 0;
+            color: #5e35b1;
+        }
+
+        #joinModal .modal-content input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #bbb;
+            font-size: 14px;
+        }
+
+        #joinModal .modal-content button {
+            padding: 10px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2e7d32, #43a047);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        #joinModal .modal-content button:hover {
+            background: linear-gradient(135deg, #43a047, #66bb6a);
+            transform: translateY(-2px);
+        }
+
+        #joinModal .modal-content .cancel-label {
+            padding: 10px;
+            background: linear-gradient(135deg, #c62828, #e53935);
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        #joinModal .modal-content .cancel-label:hover {
+            background: linear-gradient(135deg, #e53935, #ef5350);
+            transform: translateY(-2px);
+        }
+
+        /* Hidden checkbox */
+        #joinToggle {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .verify-msg {
+            font-weight: 600;
+            color: #5e35b1;
+        }
+
     </style>
 </head>
 <body>
-    <h1><p>lobby</p></h1>
+    <h1>Lobby</h1>
 
-    <!-- Основной контейнер с 3 блоками -->
-    <div style="display: flex; flex-direction: row; background-color: rgba(128, 128, 128, 0.129); justify-content: space-between; gap: 30px; padding: 10px;">
+    <!-- User card -->
+    <div class="user-card">
+        <span class="icon">👤</span>
+        <div>
+            <div class="label">Вы вошли как</div>
+            <div class="name">{{request.user}}</div>
+        </div>
+    </div>
+
+    <!-- Main container -->
+    <div class="main-container">
         {% if not request.user.is_verified %}
-            Зайди на почту
+            <div class="verify-msg">Зайди на почту</div>
         {% endif %}
-        <!-- 1: создание игры -->
-        <div style="width: auto; flex: 1;">
+
+        <!-- Create game block -->
+        <div class="block create">
             <form action="{% url 'game:create_game' %}" method="post">
                 {% csrf_token %}
-
-                <div class="create" style="display: flex; justify-content: center; flex-direction: column; background-color: rgba(0, 255, 255, 0.222);">
-                    <p>Выбери цвет:</p>
-
-                    <label>
-                        <input type="radio" name="color" value="white" style="width: 80px; height: 20px;">
-                        white
-                    </label>
-
-                    <label>
-                        <input type="radio" name="color" value="black" style="width: 80px; height: 20px;">
-                        black
-                    </label>
-
-                    <label>
-                        <input type="radio" name="color" value="random" style="width: 80px; height: 20px;">
-                        random
-                    </label><br>
-
-                    <button type="submit">Создать игру</button>
-                </div>
+                <p>Выбери цвет:</p>
+                <label><input type="radio" name="color" value="white"> white</label>
+                <label><input type="radio" name="color" value="black"> black</label>
+                <label><input type="radio" name="color" value="random"> random</label>
+                <button type="submit">Создать игру</button>
             </form>
         </div>
 
-        <!-- 2: logout -->
-        <div style="background-color: rgba(137, 43, 226, 0.316); display: flex; flex: 1; align-items: center; justify-content: center;">
+        <!-- Logout block -->
+        <div class="block logout-block">
             <a href="{% url 'user:logout' %}">
-                <button style="width: 20cap; height: 25cap; background-color: rgba(20, 50, 220, 0.538);">logout</button>
+                <button>Logout</button>
             </a>
         </div>
 
-        <!-- 3: кнопка Connect, которая откроет модалку -->
-        <div style="background-color: rgba(214, 226, 43, 0.316); flex: 1; display: flex; align-items: center; justify-content: center;">
-            <!-- Это не form, а label, который включает чекбокс ниже -->
-            <label for="joinToggle"
-                   style="padding: 10px 20px; background:#377dff; color:white;
-                          border-radius:6px; cursor:pointer; border:none;">
-                Connect
-            </label>
+        <!-- Connect block -->
+        <div class="block connect-block">
+            <label for="joinToggle">Connect</label>
         </div>
     </div>
 
-    <!-- Скрытый чекбокс и модалка ДОЛЖНЫ быть ВНЕ flex-контейнера -->
-
-    <!-- Скрытый чекбокс-переключатель -->
+    <!-- Hidden checkbox -->
     <input type="checkbox" id="joinToggle">
 
-    <!-- Модальное окно -->
+    <!-- Modal -->
     <div id="joinModal">
-        <div style="
-            background:white;
-            padding:20px;
-            border-radius:10px;
-            width:300px;
-            box-shadow:0 0 20px rgba(0,0,0,0.3);
-        ">
+        <div class="modal-content">
             <h3>Войти в игру</h3>
-
             <form method="get" action="{% url 'game:join_game' %}">
-                <input type="text" name="id" placeholder="ID игры"
-                    style="width:100%; padding:8px; margin:10px 0; border-radius:6px; border:1px solid #999;">
-
-                <button type="submit"
-                        style="padding:8px 15px; width:100%; background:#28a745; color:white; border:none; border-radius:6px;">
-                    Join
-                </button>
+                <input type="text" name="id" placeholder="ID игры">
+                <button type="submit">Join</button>
             </form>
-
-            <!-- Кнопка закрытия -->
-            <label for="joinToggle"
-                style="display:block; margin-top:10px; text-align:center;
-                       padding:8px; background:#dc3545; color:white;
-                       border-radius:6px; cursor:pointer;">
-                Cancel
-            </label>
+            <label for="joinToggle" class="cancel-label">Cancel</label>
         </div>
     </div>
-
-    <div>1{{request.user}}</div>
-    <div>Игр сыграно {{games_played}}<div>
-
-
 </body>
 </html>

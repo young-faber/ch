@@ -8,8 +8,10 @@
 <body>
     <form action="" method="post">
         {% csrf_token %}
-        {{form.as_div}}
-        check text
+        {% for field in form %}
+        <label for="">{{field.label}}</label>
+            {{field}}
+        {% endfor %}
         <input type="submit" value="enter">
     </form>
     <a href="{% url 'main:registr' %}">зарегистрироваться</a>
